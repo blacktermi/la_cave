@@ -1,10 +1,10 @@
-// set little red dot above icons nav
+// définir un petit point rouge au-dessus des icônes nav
 window.addEventListener("load", () => {
-  let checkbox = document.getElementsByTagName('input'); 
-  let notif = document.getElementById('nav-notif');
+  let checkbox = document.getElementsByTagName('input');
+  let notif = document.getElementById('nav-not');
 
-  // check if at least one of the checkboxes on the DOM is checked
-  const checkboxCheck = () => { 
+  // vérifier si au moins une des cases à cocher sur le DOM est cochée
+  const checkboxCheck = () => {
     for (let i = 0; i < checkbox.length; i++) {
       if (checkbox[i].checked) {
         return true;
@@ -13,9 +13,9 @@ window.addEventListener("load", () => {
     return false;
   }
 
-  // set red dot
+  // envoi plois rouge
   const setNotif = () => {
-    if (checkboxCheck()){
+    if (checkboxCheck()) {
       // console.log('true');
       notif.style.visibility = 'visible';
       notif.style.opacity = '1';
@@ -25,11 +25,11 @@ window.addEventListener("load", () => {
       notif.style.opacity = '0';
     }
   }
-  
-  // check once if red dot is needed
+
+  // vérifier une fois si un point rouge est nécessaire
   setNotif();
 
-  // watch any change
+  // regarder tout changement
   document.addEventListener('click', setNotif);
 
 });

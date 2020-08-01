@@ -1,20 +1,20 @@
 // data
 const products = [
     //Whisky
-  { id: 1, description: "Quarz Luxe", tag:"whisky", price: 2000, img: 'assets/img/quarz-luxe.JPG'},
-  { id: 2, description: 'Curren Business', tag:"whisky", price: 2000, img: 'assets/img/curren-business.JPG'},
-  { id: 3, description: 'Curren Sport', tag:"whisky", price: 3000, img: 'assets/img/curren-sport.JPG'},
-  { id: 4, description: 'Jaragar Racing', tag:"whisky", price: 3000, img: 'assets/img/jaragar-racing.JPG'},
+    { id: 1, description: "Jack Daniel", tag: "whisky", price: 2000, img: 'assets/img/img1.JPG' },
+    { id: 2, description: 'Jack Daniel', tag: "whisky", price: 2000, img: 'assets/img/img2.JPG' },
+    { id: 3, description: 'Jack Daniel', tag: "whisky", price: 3000, img: 'assets/img/img1.JPG' },
+    { id: 4, description: 'Jack Daniel', tag: "whisky", price: 3000, img: 'assets/img/img2.JPG' },
     //vins
-  { id: 5, description: 'Liges Hommes', tag:"vins", price: 4000, img: 'assets/img/liges-hommes.JPG'},
-  { id: 6, description: 'Maserati Mechanical', tag:"vins", price: 4000, img: 'assets/img/maserati-mechanical.JPG'},
-  { id: 7, description: 'Montre Mecanique', tag:"vins", price: 5000, img: 'assets/img/montre-mecanique.JPG'},
-  { id: 8, description: 'Brand Designer', tag:"vins", price: 5000, img: 'assets/img/brand-designer.JPG'},
+    { id: 5, description: 'Jack Daniel', tag: "vins", price: 4000, img: 'assets/img/img1.JPG' },
+    { id: 6, description: 'Jack Daniel', tag: "vins", price: 4000, img: 'assets/img/img2.JPG' },
+    { id: 7, description: 'Jack Daniel', tag: "vins", price: 5000, img: 'assets/img/img1.JPG' },
+    { id: 8, description: 'Jack Daniel', tag: "vins", price: 5000, img: 'assets/img/img2.JPG' },
     //Champagne
-  { id: 9, description: 'Relogio Masculino', tag:"champagne", price: 6000, img: 'assets/img/relogio-masculino.JPG'},
-  { id: 10, description: 'Tissot Multifunction', tag:"champagne", price: 6000, img: 'assets/img/tissot-multifunction.JPG'},
-  { id: 11, description: 'Hip Hop Gold', price: 7000, tag:"champagne", img: 'assets/img/hiphop-gold.JPG'},
-  { id: 12, description: 'Mesh Genova', price: 7000, tag:"champagne", img: 'assets/img/mesh-genova.JPG'},
+    { id: 9, description: 'Jack Daniel', tag: "champagne", price: 6000, img: 'assets/img/img1.JPG' },
+    { id: 10, description: 'Jack Daniel', tag: "champagne", price: 6000, img: 'assets/img/img2.JPG' },
+    { id: 11, description: 'Jack Daniel', price: 7000, tag: "champagne", img: 'assets/img/img1.JPG' },
+    { id: 12, description: 'Jack Daniel', price: 7000, tag: "champagne", img: 'assets/img/img2.JPG' },
 ];
 
 const Home = {
@@ -24,33 +24,94 @@ const Home = {
         return {
             products,
             searchkey: '',
+            liked: [],
+            cart: []
         }
     },
     computed: {
-        filteredList(){
+        filteredList() {
             return this.products.filter((product) => {
                 return product.description.toLowerCase().includes(this.searchkey.toLowerCase());
             })
+        },
+        getLikeCookie() {
+            let cookieValue = JSON.parse($cookies.get('like'));
+            cookieValue == null ? this.liked = [] : this.liked = cookieValue
+        },
+        cartTotalAmount() {
+            let total = 0;
+            for (let item in this.cart) {
+                total = total + (this.cart[item].quantity * this.cart[item].price)
+            }
+            return total;
+        },
+        itemTotalAmount() {
+            let itemTotal = 0;
+            for (let item in this.cart) {
+                itemTotal = itemTotal + (this.cart[item].quantity);
+            }
+            return itemTotal;
         }
     },
+    methods: {
+        setLikeCookie() {
+            document.addEventListener('input', () => {
+                setTimeout(() => {
+                    $cookies.set('like', JSON.stringify(this.liked));
+                }, 300);
+            })
+        },
+        addToCart(product) {
+
+            for (let i = 0; i < this.cart.length; i++) {
+                if (this.cart[i].id === product.id) {
+                    return this.cart[i].quantity++
+                }
+            }
+            this.cart.push({
+                id: product.id,
+                img: product.img,
+                description: product.description,
+                price: product.price,
+                tag: product.tag,
+                quantity: 1
+            })
+        },
+        cartPlusOne(product) {
+            product.quantity = product.quantity + 1;
+        },
+        cartMoinsOne(product, id) {
+            if (product.quantity == 1) {
+                this.cartSuppItem(id);
+            } else {
+                product.quantity = product.quantity - 1;
+            }
+        },
+        cartSuppItem(id) {
+            this.$delete(this.cart, id)
+        }
+    },
+    mounted: () => {
+        this.getLikeCookie;
+    }
 }
 const UserSettings = {
     template: '<h1>Parametre utilisateur</h1>',
-    name: 'UserSettings' 
+    name: 'UserSettings'
 }
 
 const WishList = {
     template: '<h1>CaveList</h1>',
-    name: 'Wishlist' 
+    name: 'Wishlist'
 }
 
 const ShoppingCart = {
     template: '<h1>Panier</h1>',
-    name: 'ShoppingCart' 
+    name: 'ShoppingCart'
 }
 
 // router
-const router = new VueRouter ({
+const router = new VueRouter({
     routes: [
         { path: '/', component: Home, name: 'Home' },
         { path: '/user-settings', component: UserSettings, name: 'UserSettings' },
